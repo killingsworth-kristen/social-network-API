@@ -95,6 +95,49 @@ router.delete(`/:thoughtId`, (req, res) => {
     })
 });
 
-// reactions routes?
+// add reaction
+router.post(`/:thoughtId/reactions`, (req,res)=>{
+    console.log(req.body);
+    Thought.findOneAndUpdate(
+        {_id: req.params.thoughtId},
+        {$push: 
+            { reactions: {
+                reactionBody: req.body.reactionBody,
+                username: req.body.username
+                }   
+            }
+        },
+        { runValidators: true, new: true }
+    )
+    .then((thought)=>{
+        if(!thought) {
+            res.status(404).json({msg: `Thought does not exist!`})
+        }
+        res.json(thought)
+    })
+    .catch((err)=>{
+        console.log(err);
+        res.status(500).json({msg: err})
+    })
+});
+
+// delete reaction
+router.delete(`/:thoughtId/reactions/:reactionId`, (req,res)=>{
+    Thought.findOneAndUpdate(
+        {_id: req.params.thoughtId},
+        {$pull: {reactions: {_id: req.params.reactionId}}},
+        { runValidators: true, new: true }
+    )
+    .then((thought)=>{
+        if(!thought) {
+            res.status(404).json({msg: `Thought not found!`})
+        }
+        res.json(thought);
+    })
+    .catch((err)=>{
+        console.log(err);
+        res.status(500).json({msg: err})
+    })
+})
 
 module.exports = router;

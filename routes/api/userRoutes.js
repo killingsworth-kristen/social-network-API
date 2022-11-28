@@ -94,6 +94,42 @@ router.delete(`/:userId`, (req, res) => {
     })
 });
 
-// friends routes?
+// add friend
+router.post(`/:userId/friends/:friendId`, (req,res)=>{
+    User.findOneAndUpdate(
+        {_id: req.params.userId},
+        {$push: {friends: req.params.friendId}},
+        { runValidators: true, new: true }
+    )
+    .then((user)=>{
+        if(!user) {
+            res.status(404).json({msg: `User does not exist!`})
+        }
+        res.json(user)
+    })
+    .catch((err)=>{
+        console.log(err);
+        res.status(500).json({msg: err})
+    })
+});
+
+// delete friend
+router.delete(`/:userId/friends/:friendId`, (req,res)=>{
+    User.findOneAndUpdate(
+        {_id: req.params.userId},
+        {$pull: {friends: req.params.friendId}},
+        { runValidators: true, new: true }
+    )
+    .then((user)=>{
+        if(!user) {
+            res.status(404).json({msg: `User not found!`})
+        }
+        res.json(user);
+    })
+    .catch((err)=>{
+        console.log(err);
+        res.status(500).json({msg: err})
+    })
+})
 
 module.exports = router;
