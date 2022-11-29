@@ -82,12 +82,13 @@ router.delete(`/:userId`, (req, res) => {
         if (!delUser) {
             res.status(404).json({msg: "User does not exist!"})
         }
+        return Thought.deleteMany({_id: {$in: delUser.thoughts}})
         // for (let i=0; i<delUser.thoughts.length; i++){
-        //     Thought.findOneAnddelete({_id: delUser.thoughts[i]})
+        //     Thought.findOneAndDelete({_id: delUser.thoughts[i]})
         //     console.log(delUser.thoughts[i])
         // }
-        res.json(delUser)
     })
+    .then((response)=>{res.json(response)})
     .catch((err)=>{
         console.log(err);
         res.status(500).json({msg: err})

@@ -97,7 +97,6 @@ router.delete(`/:thoughtId`, (req, res) => {
 
 // add reaction
 router.post(`/:thoughtId/reactions`, (req,res)=>{
-    console.log(req.body);
     Thought.findOneAndUpdate(
         {_id: req.params.thoughtId},
         {$push: 
